@@ -23,7 +23,15 @@
     nav a{padding:10px 0;margin-left:18px}
     .brand{display:flex;align-items:center;gap:10px}
     /* ADDED: real image logo styling */
-    .brand-logo{width:40px;height:40px;border-radius:10px;object-fit:contain}
+    /* ADDED: real image logo styling */
+.brand-logo{
+  width:56px;        /* size you want in the header */
+  height:auto;       /* keep aspect ratio */
+  object-fit:contain;
+  background:transparent;
+  display:block;
+}
+
 
     /* (You can remove this old .logo block if not needed anywhere else)
     .logo{width:36px;height:36px;border-radius:14px;background:linear-gradient(135deg,#f97316,#f59e0b);display:grid;place-items:center;color:#fff;font-weight:900}
