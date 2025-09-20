@@ -22,7 +22,13 @@
     header{position:sticky;top:0;backdrop-filter:saturate(1.2) blur(8px);background:rgba(255,255,255,.9);border-bottom:1px solid #e5e7eb;z-index:40}
     nav a{padding:10px 0;margin-left:18px}
     .brand{display:flex;align-items:center;gap:10px}
+    /* ADDED: real image logo styling */
+    .brand-logo{width:40px;height:40px;border-radius:10px;object-fit:contain}
+
+    /* (You can remove this old .logo block if not needed anywhere else)
     .logo{width:36px;height:36px;border-radius:14px;background:linear-gradient(135deg,#f97316,#f59e0b);display:grid;place-items:center;color:#fff;font-weight:900}
+    */
+
     .grid{display:grid;gap:20px}
     @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
     h1{font-size:clamp(28px,4.5vw,44px);line-height:1.1;margin:0}
@@ -44,7 +50,8 @@
   <header>
     <div class="container" style="height:64px;display:flex;align-items:center;justify-content:space-between">
       <a class="brand" href="#home">
-        <div class="logo">R3D</div>
+        <!-- REPLACED: the orange 'R3D' box with your image logo -->
+        <img src="images/logo.svg" alt="R3D Printing Logo" class="brand-logo">
         <div>
           <div style="font-weight:700">R3D Printing</div>
           <div class="muted" style="font-size:12px;margin-top:-2px">Display Cases • Custom Parts</div>
@@ -226,7 +233,7 @@
             <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
               <small class="muted">Form powered by Formspree.</small>
               <button class="btn btn-primary" type="submit">Send</button>
-</div>
+            </div>
           </div>
         </form>
       </div>
@@ -249,39 +256,37 @@
     <img alt="">
   </div>
 
+  <!-- FIXED: single clean script block -->
   <script>
-    document.getElementById('year').textContent=new Date().getFullYear()
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Grey Pneumatic gallery
+    // Grey Pneumatic gallery (swap hero image on thumbnail click)
     const hero = document.getElementById('gp-hero');
-    document.querySelectorAll('.thumbs img').forEach((t) => {
-      t.addEventListener('click', () => {
-        const full = t.dataset.full || t.src;<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+    if (hero) {
+      document.querySelectorAll('.thumbs img').forEach((t) => {
+        t.addEventListener('click', () => {
+          const full = t.dataset.full || t.src;
+          hero.src = full;
+          hero.alt = t.alt || 'Preview';
+        });
+      });
 
-  // Grey Pneumatic gallery (swap hero image on thumbnail click)
-  const hero = document.getElementById('gp-hero');
-  document.querySelectorAll('.thumbs img').forEach((t) => {
-    t.addEventListener('click', () => {
-      const full = t.dataset.full || t.src;
-      hero.src = full;
-      hero.alt = t.alt || 'Preview';
-    });
-  });
+      // Simple lightbox for the hero image
+      const lb = document.getElementById('lb');
+      const lbImg = lb.querySelector('img');
+      const lbClose = lb.querySelector('.close');
 
-  // Simple lightbox for the hero image
-  const lb = document.getElementById('lb');
-  const lbImg = lb.querySelector('img');
-  const lbClose = lb.querySelector('.close');
+      hero.style.cursor = 'zoom-in';
+      hero.addEventListener('click', () => {
+        lbImg.src = hero.src;
+        lb.classList.add('open');
+        lbClose.focus();
+      });
 
-  hero.style.cursor = 'zoom-in';
-  hero.addEventListener('click', () => {
-    lbImg.src = hero.src;
-    lb.classList.add('open');
-    lbClose.focus();
-  });
-
-  lbClose.addEventListener('click', () => lb.classList.remove('open'));
-  lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('open'); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
-</script>
+      lbClose.addEventListener('click', () => lb.classList.remove('open'));
+      lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('open'); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
+    }
+  </script>
+</body>
+</html>
