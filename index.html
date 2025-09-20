@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>R3D Printing — Display Cases & Custom 3D Designs</title>
+  <meta name="description" content="R3D Printing builds modular display cases and custom 3D-printed parts. Get a fast quote today." />
+  <style>
+    :root{--bg:#fafafa;--text:#0a0a0a;--muted:#6b7280;--brand:#ea580c;--card:#ffffff;--ring:#00000010}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Inter,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
+    img{display:block;width:100%;height:100%;object-fit:cover}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:14px;padding:.75rem 1rem;font-weight:600;cursor:pointer}
+    .btn-primary{background:var(--brand);color:#fff;border:none}
+    .btn-primary:hover{filter:brightness(.95)}
+    .btn-ghost{border:1px solid #e5e7eb;background:none}
+    .btn-ghost:hover{background:#f5f5f5}
+    .shadow{box-shadow:0 10px 25px rgba(0,0,0,.08)}
+    .ring{box-shadow:0 0 0 1px var(--ring)}
+    header{position:sticky;top:0;backdrop-filter:saturate(1.2) blur(8px);background:rgba(255,255,255,.9);border-bottom:1px solid #e5e7eb;z-index:40}
+    nav a{padding:10px 0;margin-left:18px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:36px;height:36px;border-radius:14px;background:linear-gradient(135deg,#f97316,#f59e0b);display:grid;place-items:center;color:#fff;font-weight:900}
+    .grid{display:grid;gap:20px}
+    @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
+    h1{font-size:clamp(28px,4.5vw,44px);line-height:1.1;margin:0}
+    h2{font-size:clamp(22px,3.4vw,32px);margin:0}
+    .muted{color:var(--muted)}
+    section{padding:64px 0}
+    .card{background:var(--card);border-radius:18px;overflow:hidden}
+    .card-pad{padding:16px}
+    .badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 8px;border-radius:8px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+    footer{border-top:1px solid #e5e7eb;background:#fff;padding:40px 0}
+    form label{font-size:14px;font-weight:600}
+    input,select,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;font:inherit}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="height:64px;display:flex;align-items:center;justify-content:space-between">
+      <a class="brand" href="#home">
+        <div class="logo">R</div>
+        <div>
+          <div style="font-weight:700">R3D Printing</div>
+          <div class="muted" style="font-size:12px;margin-top:-2px">Display Cases • Custom Parts</div>
+        </div>
+      </a>
+      <nav class="muted" style="font-weight:600">
+        <a href="#work">Work</a>
+        <a href="#products">Products</a>
+        <a href="#process">Process</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="home">
+    <section>
+      <div class="container grid grid-2" style="align-items:center">
+        <div>
+          <h1>Custom 3D-Printed Display Cases & Designs</h1>
+          <p class="muted" style="margin-top:14px;max-width:54ch">Idaho-built, millwright-grade quality. From stackable, dust-tight display cases to bespoke parts and mounts — precision prints for real-world use.</p>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn btn-primary" href="#contact">Get a Quote</a>
+            <a class="btn btn-ghost" href="#work">See Finished Work</a>
+          </div>
+        </div>
+        <div class="card shadow ring" style="aspect-ratio:4/3;background:#e5e7eb"></div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:16px">
+          <h2>Recent Work</h2>
+          <a class="muted" href="#contact" style="font-weight:700">Request something similar →</a>
+        </div>
+        <div class="grid grid-3">
+          <div class="card shadow ring" style="aspect-ratio:4/3;background:#e5e7eb"></div>
+          <div class="card shadow ring" style="aspect-ratio:4/3;background:#e5e7eb"></div>
+          <div class="card shadow ring" style="aspect-ratio:4/3;background:#e5e7eb"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" style="background:#fff;border-block:1px solid #e5e7eb">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:16px">
+          <h2>Ready-Made Products</h2>
+          <p class="muted" style="margin:0">Small batches available. Bulk/wholesale on request.</p>
+        </div>
+        <div class="grid grid-3">
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3;background:#e5e7eb"></div>
+            <div class="card-pad">
+              <span class="badge">Display Case</span>
+              <h3 style="margin:6px 0 2px">Stackable Display Case</h3>
+              <p class="muted" style="margin:0">Modular, dust-resistant, crystal-clear front. Multiple sizes.</p>
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Get pricing →</a></div>
+            </div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3;background:#e5e7eb"></div>
+            <div class="card-pad">
+              <span class="badge">Stand</span>
+              <h3 style="margin:6px 0 2px">Custom Figure Stand</h3>
+              <p class="muted" style="margin:0">Angle-adjustable base with logo inlay and felt bottom.</p>
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Get pricing →</a></div>
+            </div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3;background:#e5e7eb"></div>
+            <div class="card-pad">
+              <span class="badge">Shelf</span>
+              <h3 style="margin:6px 0 2px">Wall-Mount Shelf</h3>
+              <p class="muted" style="margin:0">Low-profile mount with hidden hardware and cable pass-through.</p>
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Get pricing →</a></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container">
+        <h2>How Custom Orders Work</h2>
+        <div class="grid grid-3" style="margin-top:14px">
+          <div class="card shadow ring card-pad">
+            <div style="width:32px;height:32px;border-radius:10px;background:#0a0a0a;color:#fff;display:grid;place-items:center;font-weight:800">1</div>
+            <div style="font-weight:700;margin-top:8px">Share your idea & dimensions</div>
+            <p class="muted">Screenshots, sketches, or samples welcome.</p>
+          </div>
+          <div class="card shadow ring card-pad">
+            <div style="width:32px;height:32px;border-radius:10px;background:#0a0a0a;color:#fff;display:grid;place-items:center;font-weight:800">2</div>
+            <div style="font-weight:700;margin-top:8px">We design, prototype, and confirm fit</div>
+            <p class="muted">Photos of test-fit provided for approval.</p>
+          </div>
+          <div class="card shadow ring card-pad">
+            <div style="width:32px;height:32px;border-radius:10px;background:#0a0a0a;color:#fff;display:grid;place-items:center;font-weight:800">3</div>
+            <div style="font-weight:700;margin-top:8px">Final print, finish, and delivery</div>
+            <p class="muted">Local pickup or shipping available.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" style="background:linear-gradient(#fff,#fafafa)">
+      <div class="container grid grid-2">
+        <div>
+          <h2>Get a Quote</h2>
+          <p class="muted">Tell us sizes, materials (PLA+, PETG, ABS, ASA), color, quantity, deadline — or attach a photo in your message.</p>
+          <div style="margin-top:12px;display:grid;gap:8px">
+            <p class="muted">Submissions are emailed directly to us via Formspree.</p>
+          </div>
+        </div>
+        <form class="card shadow ring card-pad" action="https://formspree.io/f/mqadyyaz" method="POST">
+          <input type="hidden" name="_subject" value="New Quote Request — R3D Printing">
+          <input type="hidden" name="_redirect" value="thank-you.html">
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
+            <label> Name<br><input name="name" required></label>
+            <label> Email<br><input name="email" type="email" required></label>
+            <label> Phone (optional)<br><input name="phone"></label>
+            <label> Project Type<br>
+              <select name="type">
+                <option>Display Case</option>
+                <option>Figure Stand</option>
+                <option>Wall-Mount / Bracket</option>
+                <option>Replacement Part</option>
+                <option>Other Custom</option>
+              </select>
+            </label>
+            <label style="grid-column:1/-1"> Dimensions & Details<br>
+              <textarea name="details" rows="6"></textarea>
+            </label>
+            <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
+              <small class="muted">Form powered by Formspree.</small>
+              <button class="btn btn-primary" type="submit">Send</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div>
+        <div style="font-weight:700">R3D Printing</div>
+        <div class="muted" style="font-size:14px">Idaho, USA</div>
+      </div>
+      <div class="muted" style="font-size:14px">© <span id="year"></span> R3D Printing. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+</body>
+</html>
