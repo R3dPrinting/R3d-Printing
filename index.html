@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>R3D Printing — Display Cases & Custom 3D Designs</title>
-  <meta name="description" content="R3D Printing builds modular display cases and custom 3D‑printed parts. Get a fast quote today." />
+  <meta name="description" content="R3D Printing builds modular display cases, tool holders, and custom 3D-printed parts. Get a fast quote today." />
   <style>
     :root{--bg:#fafafa;--text:#0a0a0a;--muted:#6b7280;--brand:#ea580c;--card:#ffffff;--ring:#00000010}
     *{box-sizing:border-box}
@@ -35,6 +35,15 @@
     footer{border-top:1px solid #e5e7eb;background:#fff;padding:40px 0}
     form label{font-size:14px;font-weight:600}
     input,select,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;font:inherit}
+
+    /* Lightbox (for product gallery) */
+    .thumbs{display:flex;gap:8px;margin-top:8px}
+    .thumbs img{width:64px;height:64px;object-fit:cover;border-radius:10px;cursor:pointer;border:1px solid #e5e7eb}
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:16px}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:min(100%,1100px);max-height:88vh;border-radius:12px;box-shadow:0 15px 45px rgba(0,0,0,.4)}
+    .lightbox .close{position:absolute;top:16px;right:16px;background:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
 </head>
 <body>
@@ -61,14 +70,15 @@
     <section>
       <div class="container grid grid-2" style="align-items:center">
         <div>
-          <h1>Custom 3D‑Printed Display Cases & Designs</h1>
-          <p class="muted" style="margin-top:14px;max-width:54ch">Idaho‑built, millwright‑grade quality. From stackable, dust‑tight display cases to bespoke parts and mounts — precision prints for real‑world use.</p>
+          <h1>Custom 3D-Printed Display Cases & Designs</h1>
+          <p class="muted" style="margin-top:14px;max-width:54ch">Idaho-built, millwright-grade quality. From stackable, dust-tight display cases to bespoke parts and mounts — precision prints for real-world use.</p>
           <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
             <a class="btn btn-primary" href="#contact">Get a Quote</a>
             <a class="btn btn-ghost" href="#work">See Finished Work</a>
           </div>
         </div>
-        <div class="card shadow ring" style="aspect-ratio:4/3"><img src="images/1000027039.jpg" alt="3D printing showcase"></div>
+        <!-- hero image: swap if you prefer another -->
+        <div class="card shadow ring" style="aspect-ratio:4/3"><img src="images/xbox-controller-display.jpg" alt="3D printing showcase"></div>
       </div>
     </section>
 
@@ -80,9 +90,9 @@
           <a class="muted" href="#contact" style="font-weight:700">Request something similar →</a>
         </div>
         <div class="grid grid-3">
-          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/1000027036.jpg" alt="Stackable display case"></article>
-          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/1000027037.jpg" alt="Custom figure stand"></article>
-          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/1000026525.jpg" alt="Wall mount shelf"></article>
+          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/Gamecube-controller-display.jpg" alt="GameCube controller display"></article>
+          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/Switch-controller-display.jpg" alt="Switch controller display"></article>
+          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/vertical-display.jpg" alt="Vertical display"></article>
         </div>
       </div>
     </section>
@@ -91,36 +101,121 @@
     <section id="products" style="background:#fff;border-block:1px solid #e5e7eb">
       <div class="container">
         <div style="display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:16px">
-          <h2>Ready‑Made Products</h2>
+          <h2>Ready-Made Products</h2>
           <p class="muted" style="margin:0">Small batches available. Bulk/wholesale on request.</p>
         </div>
-        <div class="grid grid-3">
+
+        <!-- PRICED ITEMS -->
+        <div class="grid grid-3" style="margin-bottom:24px">
+
+          <!-- Controller Display Case -->
           <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/1000027041.jpg" alt="Stackable display case product"></div>
+            <div style="aspect-ratio:4/3"><img src="images/xbox-controller-display.jpg" alt="Controller display case"></div>
             <div class="card-pad">
               <span class="badge">Display Case</span>
-              <h3 style="margin:6px 0 2px">Stackable Display Case</h3>
-              <p class="muted" style="margin:0">Modular, dust‑resistant, crystal‑clear front. Multiple sizes.</p>
-              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Get pricing →</a></div>
+              <h3 style="margin:6px 0 2px">Controller Display Case</h3>
+              <p class="muted" style="margin:0">
+                Price: <strong>$35</strong><br>
+                Fits: Xbox, PlayStation, and Switch controllers
+              </p>
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Order now →</a></div>
             </div>
           </article>
+
+          <!-- Grey Pneumatic Duo Socket Holder (with gallery & variations) -->
           <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/1000027039.jpg" alt="Custom figure stand product"></div>
+            <div style="aspect-ratio:4/3" id="gp-main">
+              <img src="images/grey-pneumatic-375.jpg" alt="Grey Pneumatic Duo Socket Holder with magnets">
+            </div>
             <div class="card-pad">
-              <span class="badge">Stand</span>
-              <h3 style="margin:6px 0 2px">Custom Figure Stand</h3>
-              <p class="muted" style="margin:0">Angle‑adjustable base with logo inlay and felt bottom.</p>
-              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Get pricing →</a></div>
+              <span class="badge">Tool Holder</span>
+              <h3 style="margin:6px 0 2px">Grey Pneumatic Duo Socket Holder</h3>
+              <p class="muted" style="margin:0">
+                Price: <strong>$35</strong><br>
+                Fits: 1/4, 3/8, and 1/2-drive sockets
+              </p>
+              <ul class="muted" style="margin:8px 0 0 18px;font-size:14px">
+                <li>Color: Black or White</li>
+                <li>Mount: Standard or Packout</li>
+                <li>Magnetic back (strong enough for upside-down use)</li>
+              </ul>
+
+              <!-- Thumbnails for simple gallery -->
+              <div class="thumbs" aria-label="Gallery">
+                <img src="images/grey-pneumatic-375.jpg" alt="Grey Pneumatic front" data-full="images/grey-pneumatic-375.jpg">
+                <img src="images/grey-pneumatic-packout.jpg" alt="Packout variation" data-full="images/grey-pneumatic-packout.jpg">
+                <img src="images/grey-pneumatic-upsideown.jpg" alt="Upside-down demo (magnet strength)" data-full="images/grey-pneumatic-upsideown.jpg">
+                <img src="images/grey-pneumatic-half-white.jpg" alt="White color option" data-full="images/grey-pneumatic-half-white.jpg">
+                <img src="images/grey-pneumatic-half-black.jpg" alt="Black color option" data-full="images/grey-pneumatic-half-black.jpg">
+              </div>
+
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Order now →</a></div>
             </div>
           </article>
+
+          <!-- Wrench / Tool Holders -->
           <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/1000027037.jpg" alt="Wall mount shelf product"></div>
+            <div style="aspect-ratio:4/3"><img src="images/gearwrench-half.jpg" alt="Wrench and tool holders"></div>
             <div class="card-pad">
-              <span class="badge">Shelf</span>
-              <h3 style="margin:6px 0 2px">Wall‑Mount Shelf</h3>
-              <p class="muted" style="margin:0">Low‑profile mount with hidden hardware and cable pass‑through.</p>
-              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Get pricing →</a></div>
+              <span class="badge">Holder</span>
+              <h3 style="margin:6px 0 2px">Wrench / Tool Holders</h3>
+              <p class="muted" style="margin:0">
+                Price: <strong>$1 each</strong><br>
+                Fits: Standard wrenches & small hand tools
+              </p>
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Order now →</a></div>
             </div>
+          </article>
+
+          <!-- Lithophane Images -->
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/lithophane.jpg" alt="Lithophane example"></div>
+            <div class="card-pad">
+              <span class="badge">Custom Print</span>
+              <h3 style="margin:6px 0 2px">Lithophane Images</h3>
+              <p class="muted" style="margin:0">
+                Price: <strong>$15 and up</strong><br>
+                Details: Personalized light-through photo panels/frames
+              </p>
+              <div style="margin-top:10px"><a class="muted" style="font-weight:700" href="#contact">Start an order →</a></div>
+            </div>
+          </article>
+        </div>
+
+        <!-- OTHER ITEMS (REQUEST QUOTE) -->
+        <h3 style="margin:0 0 12px">More Designs</h3>
+        <div class="grid grid-3">
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/Gamecube-controller-display.jpg" alt="GameCube controller display"></div>
+            <div class="card-pad"><span class="badge">Display</span><h4 style="margin:6px 0 2px">GameCube Controller Display</h4><p class="muted" style="margin:0">Fits: GameCube controllers. <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/cartridge-display.jpg" alt="Cartridge display"></div>
+            <div class="card-pad"><span class="badge">Display</span><h4 style="margin:6px 0 2px">Cartridge Display</h4><p class="muted" style="margin:0">Fits: Game cartridges (specify system). <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/Large-display.jpg" alt="Large display case"></div>
+            <div class="card-pad"><span class="badge">Display</span><h4 style="margin:6px 0 2px">Large Display Case</h4><p class="muted" style="margin:0">Custom sizes available. <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/socket-organizer.jpg" alt="Socket organizer"></div>
+            <div class="card-pad"><span class="badge">Organizer</span><h4 style="margin:6px 0 2px">Socket Organizer</h4><p class="muted" style="margin:0">Drawers/bench options. <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/tap-socket-holder.jpg" alt="Tap socket holder"></div>
+            <div class="card-pad"><span class="badge">Holder</span><h4 style="margin:6px 0 2px">Tap Socket Holder</h4><p class="muted" style="margin:0">Keeps taps organized. <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/packout-divider.jpg" alt="Packout divider"></div>
+            <div class="card-pad"><span class="badge">Accessory</span><h4 style="margin:6px 0 2px">Packout Divider</h4><p class="muted" style="margin:0">Milwaukee Packout compatible. <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/msr-fuel-bottle-mount.jpg" alt="MSR fuel bottle mount"></div>
+            <div class="card-pad"><span class="badge">Mount</span><h4 style="margin:6px 0 2px">MSR Fuel Bottle Mount</h4><p class="muted" style="margin:0">Secure carry bracket. <strong>Request quote</strong>.</p></div>
+          </article>
+          <article class="card shadow ring">
+            <div style="aspect-ratio:4/3"><img src="images/glovebox.jpg" alt="Glovebox organizer"></div>
+            <div class="card-pad"><span class="badge">Organizer</span><h4 style="margin:6px 0 2px">Glovebox Organizer</h4><p class="muted" style="margin:0">Keeps docs & tools tidy. <strong>Request quote</strong>.</p></div>
           </article>
         </div>
       </div>
@@ -139,7 +234,7 @@
           <div class="card shadow ring card-pad">
             <div style="width:32px;height:32px;border-radius:10px;background:#0a0a0a;color:#fff;display:grid;place-items:center;font-weight:800">2</div>
             <div style="font-weight:700;margin-top:8px">We design, prototype, and confirm fit</div>
-            <p class="muted">Photos of test‑fit provided for approval.</p>
+            <p class="muted">Photos of test-fit provided for approval.</p>
           </div>
           <div class="card shadow ring card-pad">
             <div style="width:32px;height:32px;border-radius:10px;background:#0a0a0a;color:#fff;display:grid;place-items:center;font-weight:800">3</div>
@@ -171,13 +266,13 @@
               <select name="type">
                 <option>Display Case</option>
                 <option>Figure Stand</option>
-                <option>Wall‑Mount / Bracket</option>
+                <option>Wall-Mount / Bracket</option>
                 <option>Replacement Part</option>
                 <option>Other Custom</option>
               </select>
             </label>
             <label style="grid-column:1/-1"> Dimensions & Details<br>
-              <textarea name="details" rows="6"></textarea>
+              <textarea name="details" rows="6" placeholder="Sizes, color, quantity, deadline…"></textarea>
             </label>
             <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
               <small class="muted">Form powered by Formspree.</small>
@@ -199,6 +294,30 @@
     </div>
   </footer>
 
-  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+  <!-- Simple lightbox -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+    <button class="close" aria-label="Close preview">Close ✕</button>
+    <img alt="">
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Lightweight gallery for Grey Pneumatic thumbnails
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
+    const closeBtn = lb.querySelector('.close');
+
+    document.querySelectorAll('.thumbs img').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        lbImg.src = thumb.dataset.full || thumb.src;
+        lb.classList.add('open');
+        closeBtn.focus();
+      });
+    });
+    closeBtn.addEventListener('click', () => lb.classList.remove('open'));
+    lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('open'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
+  </script>
 </body>
 </html>
