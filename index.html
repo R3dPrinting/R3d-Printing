@@ -228,39 +228,120 @@
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" style="background:linear-gradient(#fff,#fafafa)">
-      <div class="container grid grid-2">
-        <div>
-          <h2>Get a Quote</h2>
-          <p class="muted">Tell us sizes, materials (PLA+, PETG, ABS, ASA), color, quantity, deadline — or attach a photo in your message.</p>
+<!-- CONTACT -->
+<section id="contact" style="background:linear-gradient(#fff,#fafafa)">
+  <div class="container grid grid-2">
+    <div>
+      <h2>Get a Quote</h2>
+      <p class="muted">Tell us sizes, materials (PLA+, PETG, ABS, ASA), color, quantity, deadline — or attach a photo in your message.</p>
+    </div>
+
+    <!-- Contact form -->
+    <form id="quote-form" class="card shadow ring card-pad" novalidate>
+      <!-- hidden spam trap (leave empty) -->
+      <input type="text" name="_gotcha" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;height:0;width:0;opacity:0">
+
+      <!-- helpful metadata (optional) -->
+      <input type="hidden" name="source" value="R3D Printing website">
+      <input type="hidden" name="page" value="index.html">
+
+      <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
+        <label>Name<br><input name="name" required></label>
+        <label>Email<br><input name="email" type="email" required></label>
+        <label>Phone (optional)<br><input name="phone" inputmode="tel" ></label>
+        <label>Project Type<br>
+          <select name="type">
+            <option>Display Case</option>
+            <option>Figure Stand</option>
+            <option>Wall-Mount / Bracket</option>
+            <option>Replacement Part</option>
+            <option>Other Custom</option>
+          </select>
+        </label>
+        <label style="grid-column:1/-1">Dimensions & Details<br>
+          <textarea name="details" rows="6" required></textarea>
+        </label>
+
+        <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
+          <small class="muted">Form powered by Formspree.</small>
+          <button class="btn btn-primary" type="submit">Send</button>
         </div>
-        <form class="card shadow ring card-pad" action="https://formspree.io/f/mqadyyaz" method="POST">
-          <input type="hidden" name="_subject" value="New Quote Request — R3D Printing">
-          <input type="hidden" name="_redirect" value="thank-you.html">
-          <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
-            <label>Name<br><input name="name" required></label>
-            <label>Email<br><input name="email" type="email" required></label>
-            <label>Phone (optional)<br><input name="phone"></label>
-            <label>Project Type<br>
-              <select name="type">
-                <option>Display Case</option>
-                <option>Figure Stand</option>
-                <option>Wall-Mount / Bracket</option>
-                <option>Replacement Part</option>
-                <option>Other Custom</option>
-              </select>
-            </label>
-            <label style="grid-column:1/-1">Dimensions & Details<br><textarea name="details" rows="6"></textarea></label>
-            <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
-              <small class="muted">Form powered by Formspree.</small>
-              <button class="btn btn-primary" type="submit">Send</button>
-            </div>
-          </div>
-        </form>
+
+        <!-- status line -->
+        <div id="form-status" class="muted" style="grid-column:1/-1;margin-top:8px"></div>
       </div>
-    </section>
-  </main>
+
+      <noscript>
+        <p class="muted" style="margin-top:10px">
+          JavaScript is required to submit. Or email us directly:
+          <a href="mailto:your@email.com">your@email.com</a>
+        </p>
+      </noscript>
+    </form>
+  </div>
+</section>
+
+<script>
+/**
+ * R3D Contact Form — Formspree v2
+ * 1) Create a Form at https://formspree.io/
+ * 2) Replace FORM_ID with your real ID (e.g. "abcdwxyz").
+ * 3) Publish page and test.
+ */
+const FORM_ID = "REPLACE_WITH_YOUR_FORMSPREE_ID"; // <-- put your real ID here
+const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORM_ID}`;
+
+(function initQuoteForm(){
+  const form = document.getElementById("quote-form");
+  if (!form) return;
+
+  const statusEl = document.getElementById("form-status");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusEl.textContent = "Sending…";
+
+    // If the honeypot (spam trap) is filled, abort silently
+    const honeypot = form.querySelector('input[name="_gotcha"]');
+    if (honeypot && honeypot.value) {
+      statusEl.textContent = "Something went wrong. Please try again.";
+      return;
+    }
+
+    // Build payload
+    const data = new FormData(form);
+    // Optional subject shown in Formspree dashboard / email
+    if (!data.has("_subject")) data.append("_subject", "New Quote Request — R3D Printing");
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: data,
+        headers: { "Accept": "application/json" }
+      });
+
+      if (res.ok) {
+        form.reset();
+        statusEl.style.color = "#16a34a"; // green-600
+        statusEl.textContent = "Thanks! Your request was sent. I’ll get back to you shortly.";
+      } else {
+        let msg = "Could not send your message.";
+        try {
+          const json = await res.json();
+          if (json && json.errors) {
+            msg = json.errors.map(e => e.message).join(", ");
+          }
+        } catch (_) { /* ignore parse errors */ }
+        statusEl.style.color = "#b91c1c"; // red-700
+        statusEl.textContent = msg + " (Check your Form ID is correct and activated.)";
+      }
+    } catch (err) {
+      statusEl.style.color = "#b91c1c";
+      statusEl.textContent = "Network error. Please check your connection and try again.";
+    }
+  });
+})();
+</script>
 
   <footer>
     <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
