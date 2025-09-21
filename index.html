@@ -262,10 +262,10 @@
 </section>
 <script>
 /* ============================================================
-   R3D Printing — Single Unified Script (no form JS)
+   R3D Printing — Robust Single Script (no form JS)
    - Footer year
    - Grey Pneumatic thumbs -> hero swap
-   - Universal lightbox (click/Enter/Space + Esc/←/→)
+   - Universal lightbox (auto-create if missing)
    ============================================================ */
 
 // Footer year
@@ -288,20 +288,52 @@
   });
 })();
 
-// Universal Lightbox (uses existing #lb)
+// Ensure lightbox DOM exists (creates one if missing)
 (() => {
-  const lb = document.getElementById('lb');
-  if (!lb) return;
+  if (document.getElementById('lb')) return;
+  const lb = document.createElement('div');
+  lb.id = 'lb';
+  lb.className = 'lightbox';
+  lb.setAttribute('role','dialog');
+  lb.setAttribute('aria-modal','true');
+  lb.setAttribute('aria-label','Image preview');
+  lb.innerHTML = `
+    <button class="close" aria-label="Close preview">✕</button>
+    <button class="prev"  aria-label="Previous image">◀</button>
+    <img alt="">
+    <button class="next"  aria-label="Next image">▶</button>
+    <div class="caption" id="lb-caption"></div>
+  `;
+  document.body.appendChild(lb);
+})();
 
-  const lbImg     = lb.querySelector('img');
-  const lbClose   = lb.querySelector('.close');
-  const lbPrev    = lb.querySelector('.prev');
-  const lbNext    = lb.querySelector('.next');
+// Universal Lightbox (broad, resilient selector)
+(() => {
+  const lb = document.getElementById('lb'); if (!lb) return;
+  const lbImg = lb.querySelector('img');
+  const lbClose = lb.querySelector('.close');
+  const lbPrev = lb.querySelector('.prev');
+  const lbNext = lb.querySelector('.next');
   const lbCaption = document.getElementById('lb-caption');
 
-  // Make any image inside a .card or with .click-zoom clickable
-  const imgs = Array.from(document.querySelectorAll('img'))
-    .filter(img => img.closest('.card') || img.classList.contains('click-zoom'));
+  // Pick images inside <main>, exclude header/logo, thumbs, and the lightbox itself
+  const imgs = Array.from(document.querySelectorAll('main img')).filter(img =>
+    img.id !== 'lb-img' &&
+    !img.closest('#lb') &&
+    !img.classList.contains('brand-logo') &&
+    !img.closest('.thumbs')
+  );
+
+  // If your CSS doesn't define .click-zoom, this adds the cursor
+  const ensureClickZoomCursor = () => {
+    if (!document.querySelector('style[data-zoom-style]')) {
+      const s = document.createElement('style');
+      s.setAttribute('data-zoom-style','');
+      s.textContent = '.click-zoom{cursor:zoom-in}';
+      document.head.appendChild(s);
+    }
+  };
+  ensureClickZoomCursor();
 
   let current = -1;
 
@@ -320,6 +352,7 @@
   function prev(){ if (current > -1) openAt((current - 1 + imgs.length) % imgs.length); }
   function next(){ if (current > -1) openAt((current + 1) % imgs.length); }
 
+  // Bind images
   imgs.forEach((img, i) => {
     img.classList.add('click-zoom');
     img.tabIndex = 0;
@@ -330,14 +363,11 @@
     });
   });
 
+  // Lightbox controls
   lbClose?.addEventListener('click', close);
   lbPrev?.addEventListener('click', prev);
   lbNext?.addEventListener('click', next);
-
-  // click outside image closes
   lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
-
-  // keyboard while open
   document.addEventListener('keydown', (e) => {
     if (!lb.classList.contains('open')) return;
     if (e.key === 'Escape')     close();
@@ -346,6 +376,7 @@
   }, { passive: true });
 })();
 </script>
+
 
 </body>
 </html>
