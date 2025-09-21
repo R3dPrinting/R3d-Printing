@@ -22,20 +22,15 @@
     header{position:sticky;top:0;backdrop-filter:saturate(1.2) blur(8px);background:rgba(255,255,255,.9);border-bottom:1px solid #e5e7eb;z-index:40}
     nav a{padding:10px 0;margin-left:18px}
     .brand{display:flex;align-items:center;gap:10px}
-    /* ADDED: real image logo styling */
-    /* ADDED: real image logo styling */
-.brand-logo{
-  width:100px;        /* size you want in the header */
-  height:auto;       /* keep aspect ratio */
-  object-fit:contain;
-  background:transparent;
-  display:block;
-}
 
-
-    /* (You can remove this old .logo block if not needed anywhere else)
-    .logo{width:36px;height:36px;border-radius:14px;background:linear-gradient(135deg,#f97316,#f59e0b);display:grid;place-items:center;color:#fff;font-weight:900}
-    */
+    /* Logo image */
+    .brand-logo{
+      width:100px;
+      height:auto;
+      object-fit:contain;
+      background:transparent;
+      display:block;
+    }
 
     .grid{display:grid;gap:20px}
     @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
@@ -52,13 +47,26 @@
     .price{color:#ea580c;font-weight:700}
     .thumbs{display:flex;gap:6px;margin-top:8px}
     .thumbs img{width:48px;height:48px;object-fit:cover;cursor:pointer;border:1px solid #e5e7eb;border-radius:6px}
+
+    /* --- Lightbox styles --- */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:92vw;max-height:90vh;border-radius:12px;box-shadow:0 15px 60px rgba(0,0,0,.5)}
+    .lightbox .close, .lightbox .prev, .lightbox .next{
+      position:absolute;border:none;background:rgba(255,255,255,.9);padding:.6rem .8rem;border-radius:12px;cursor:pointer;font-weight:800
+    }
+    .lightbox .close{top:20px;right:20px}
+    .lightbox .prev{left:20px;top:50%;transform:translateY(-50%)}
+    .lightbox .next{right:20px;top:50%;transform:translateY(-50%)}
+    .lightbox .caption{position:absolute;left:0;right:0;bottom:16px;text-align:center;color:#fff;font-size:14px;opacity:.9;padding:0 16px}
+    /* make all gallery imgs look clickable */
+    .click-zoom{cursor:zoom-in}
   </style>
 </head>
 <body>
   <header>
     <div class="container" style="height:64px;display:flex;align-items:center;justify-content:space-between">
       <a class="brand" href="#home">
-        <!-- REPLACED: the orange 'R3D' box with your image logo -->
         <img src="images/logo-R3D.png" alt="R3D Printing Logo" class="brand-logo">
         <div>
           <div style="font-weight:700">R3D Printing</div>
@@ -86,7 +94,9 @@
             <a class="btn btn-ghost" href="#work">See Finished Work</a>
           </div>
         </div>
-        <div class="card shadow ring" style="aspect-ratio:4/3"><img src="images/xbox-controller-display.jpg" alt="3D printing showcase"></div>
+        <div class="card shadow ring" style="aspect-ratio:4/3">
+          <img src="images/xbox-controller-display.jpg" alt="3D printing showcase" class="click-zoom" data-gallery="hero">
+        </div>
       </div>
     </section>
 
@@ -97,10 +107,10 @@
           <h2>Recent Work</h2>
           <a class="muted" href="#contact" style="font-weight:700">Request something similar →</a>
         </div>
-        <div class="grid grid-3">
-          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/Switch-controller-display.jpg" alt="Switch controller display"></article>
-          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/Gamecube-controller-display.jpg" alt="GameCube controller display"></article>
-          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/cartridge-display.jpg" alt="Cartridge display"></article>
+        <div class="grid grid-3" data-gallery="work">
+          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/Switch-controller-display.jpg" alt="Switch controller display" class="click-zoom"></article>
+          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/Gamecube-controller-display.jpg" alt="GameCube controller display" class="click-zoom"></article>
+          <article class="card shadow ring" style="aspect-ratio:4/3"><img src="images/cartridge-display.jpg" alt="Cartridge display" class="click-zoom"></article>
         </div>
       </div>
     </section>
@@ -115,8 +125,10 @@
 
         <div class="grid grid-3" style="margin-bottom:24px">
           <!-- Controller Display Case -->
-          <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/xbox-controller-display.jpg" alt="Controller display case"></div>
+          <article class="card shadow ring" data-gallery="controller-case">
+            <div style="aspect-ratio:4/3">
+              <img src="images/xbox-controller-display.jpg" alt="Controller display case" class="click-zoom">
+            </div>
             <div class="card-pad">
               <span class="badge">Display Case</span>
               <h3 style="margin:6px 0 2px">Controller Display Case</h3>
@@ -125,8 +137,11 @@
           </article>
 
           <!-- Grey Pneumatic Duo Socket Holder -->
-          <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/grey-pneumatic-.375.jpg" alt="Grey Pneumatic Duo Socket Holder with magnets"></div>
+          <article class="card shadow ring" data-gallery="grey-pneumatic">
+            <div style="aspect-ratio:4/3">
+              <!-- Add an id so thumbnails can target this -->
+              <img id="gp-hero" src="images/grey-pneumatic-.375.jpg" alt="Grey Pneumatic Duo Socket Holder with magnets" class="click-zoom">
+            </div>
             <div class="card-pad">
               <span class="badge">Tool Holder</span>
               <h3 style="margin:6px 0 2px">Grey Pneumatic Duo Socket Holder</h3>
@@ -137,18 +152,21 @@
                 <li>Magnetic back (strong enough for upside-down use)</li>
               </ul>
               <div class="thumbs">
-                <img src="images/grey-pneumatic-.375.jpg">
-                <img src="images/grey-pneumatic-packout.jpeg">
-                <img src="images/grey-pneumatic-upsidedown.jpg">
-                <img src="images/grey-pneumatic-half-white.jpg">
-                <img src="images/grey-pneumatic-half-black.jpg">
+                <!-- If you have bigger originals, set data-full to the big image; otherwise src is fine -->
+                <img src="images/grey-pneumatic-.375.jpg" alt="Grey Pneumatic front" data-full="images/grey-pneumatic-.375.jpg">
+                <img src="images/grey-pneumatic-packout.jpeg" alt="Packout mount" data-full="images/grey-pneumatic-packout.jpeg">
+                <img src="images/grey-pneumatic-upsidedown.jpg" alt="Upside-down strength" data-full="images/grey-pneumatic-upsidedown.jpg">
+                <img src="images/grey-pneumatic-half-white.jpg" alt="White variant" data-full="images/grey-pneumatic-half-white.jpg">
+                <img src="images/grey-pneumatic-half-black.jpg" alt="Black variant" data-full="images/grey-pneumatic-half-black.jpg">
               </div>
             </div>
           </article>
 
           <!-- Wrench / Tool Holders -->
-          <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/told-holder.jpg" alt="Wrench and tool holders"></div>
+          <article class="card shadow ring" data-gallery="wrench-tool">
+            <div style="aspect-ratio:4/3">
+              <img src="images/told-holder.jpg" alt="Wrench and tool holders" class="click-zoom">
+            </div>
             <div class="card-pad">
               <span class="badge">Holder</span>
               <h3 style="margin:6px 0 2px">Wrench / Tool Holders</h3>
@@ -157,8 +175,10 @@
           </article>
 
           <!-- Lithophane Images -->
-          <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/lithophane.jpg" alt="Lithophane example"></div>
+          <article class="card shadow ring" data-gallery="lithophane">
+            <div style="aspect-ratio:4/3">
+              <img src="images/lithophane.jpg" alt="Lithophane example" class="click-zoom">
+            </div>
             <div class="card-pad">
               <span class="badge">Custom Print</span>
               <h3 style="margin:6px 0 2px">Lithophane Images</h3>
@@ -167,8 +187,10 @@
           </article>
 
           <!-- MSR Fuel Bottle Mount -->
-          <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/msr-fuel-bottle-mount.jpg" alt="MSR fuel bottle mount"></div>
+          <article class="card shadow ring" data-gallery="msr-mount">
+            <div style="aspect-ratio:4/3">
+              <img src="images/msr-fuel-bottle-mount.jpg" alt="MSR fuel bottle mount" class="click-zoom">
+            </div>
             <div class="card-pad">
               <span class="badge">Mount</span>
               <h3 style="margin:6px 0 2px">MSR Fuel Bottle Mount</h3>
@@ -177,8 +199,10 @@
           </article>
 
           <!-- GearWrench Socket Holder -->
-          <article class="card shadow ring">
-            <div style="aspect-ratio:4/3"><img src="images/gearwrench-half.jpg" alt="GearWrench socket holder"></div>
+          <article class="card shadow ring" data-gallery="gearwrench">
+            <div style="aspect-ratio:4/3">
+              <img src="images/gearwrench-half.jpg" alt="GearWrench socket holder" class="click-zoom">
+            </div>
             <div class="card-pad">
               <span class="badge">Socket Holder</span>
               <h3 style="margin:6px 0 2px">GearWrench Socket Holder</h3>
@@ -190,14 +214,14 @@
 
         <!-- OTHER ITEMS (request quote) -->
         <h3 style="margin:0 0 12px">More Designs</h3>
-        <div class="grid grid-3">
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/Gamecube-controller-display.jpg"></div><div class="card-pad"><span class="badge">Display</span><h4>GameCube Controller Display</h4><p class="muted">Fits: GameCube controllers. Request quote.</p></div></article>
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/cartridge-display.jpg"></div><div class="card-pad"><span class="badge">Display</span><h4>Cartridge Display</h4><p class="muted">Fits: Game cartridges (specify system). Request quote.</p></div></article>
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/Large-display.jpg"></div><div class="card-pad"><span class="badge">Display</span><h4>Large Display Case</h4><p class="muted">Custom sizes available. Request quote.</p></div></article>
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/socket-organzier.jpg"></div><div class="card-pad"><span class="badge">Organizer</span><h4>Socket Organizer</h4><p class="muted">Drawers/bench options. Request quote.</p></div></article>
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/tap-socket-holder.jpg"></div><div class="card-pad"><span class="badge">Holder</span><h4>Tap Socket Holder</h4><p class="muted">Keeps taps organized. Request quote.</p></div></article>
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/packout-divider.png"></div><div class="card-pad"><span class="badge">Accessory</span><h4>Packout Divider</h4><p class="muted">Milwaukee Packout compatible. Request quote.</p></div></article>
-          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/glovebox.jpg"></div><div class="card-pad"><span class="badge">Organizer</span><h4>Glovebox Organizer</h4><p class="muted">Keeps docs & tools tidy. Request quote.</p></div></article>
+        <div class="grid grid-3" data-gallery="more-designs">
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/Gamecube-controller-display.jpg" alt="GameCube controller display" class="click-zoom"></div><div class="card-pad"><span class="badge">Display</span><h4>GameCube Controller Display</h4><p class="muted">Fits: GameCube controllers. Request quote.</p></div></article>
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/cartridge-display.jpg" alt="Cartridge display" class="click-zoom"></div><div class="card-pad"><span class="badge">Display</span><h4>Cartridge Display</h4><p class="muted">Fits: Game cartridges (specify system). Request quote.</p></div></article>
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/Large-display.jpg" alt="Large display case" class="click-zoom"></div><div class="card-pad"><span class="badge">Display</span><h4>Large Display Case</h4><p class="muted">Custom sizes available. Request quote.</p></div></article>
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/socket-organzier.jpg" alt="Socket organizer" class="click-zoom"></div><div class="card-pad"><span class="badge">Organizer</span><h4>Socket Organizer</h4><p class="muted">Drawers/bench options. Request quote.</p></div></article>
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/tap-socket-holder.jpg" alt="Tap socket holder" class="click-zoom"></div><div class="card-pad"><span class="badge">Holder</span><h4>Tap Socket Holder</h4><p class="muted">Keeps taps organized. Request quote.</p></div></article>
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/packout-divider.png" alt="Packout divider" class="click-zoom"></div><div class="card-pad"><span class="badge">Accessory</span><h4>Packout Divider</h4><p class="muted">Milwaukee Packout compatible. Request quote.</p></div></article>
+          <article class="card shadow ring"><div style="aspect-ratio:4/3"><img src="images/glovebox.jpg" alt="Glovebox organizer" class="click-zoom"></div><div class="card-pad"><span class="badge">Organizer</span><h4>Glovebox Organizer</h4><p class="muted">Keeps docs & tools tidy. Request quote.</p></div></article>
         </div>
       </div>
     </section>
@@ -258,43 +282,68 @@
     </div>
   </footer>
 
-  <!-- Lightbox -->
+  <!-- Lightbox (in-DOM, reused) -->
   <div id="lb" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
-    <button class="close" aria-label="Close preview">Close ✕</button>
+    <button class="close" aria-label="Close preview">✕</button>
+    <button class="prev" aria-label="Previous image">◀</button>
     <img alt="">
+    <button class="next" aria-label="Next image">▶</button>
+    <div class="caption" id="lb-caption"></div>
   </div>
 
-  <!-- FIXED: single clean script block -->
+  <!-- Single script: year, galleries, universal lightbox -->
   <script>
+    // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Grey Pneumatic gallery (swap hero image on thumbnail click)
-    const hero = document.getElementById('gp-hero');
-    if (hero) {
-      document.querySelectorAll('.thumbs img').forEach((t) => {
+    // ---------- Grey Pneumatic thumbnail -> hero swap ----------
+    (function setupGreyPneumaticGallery(){
+      const hero = document.getElementById('gp-hero');
+      if (!hero) return;
+      const thumbs = hero.closest('.card').querySelectorAll('.thumbs img');
+      thumbs.forEach(t => {
         t.addEventListener('click', () => {
           const full = t.dataset.full || t.src;
           hero.src = full;
           hero.alt = t.alt || 'Preview';
         });
       });
+    })();
 
-      // Simple lightbox for the hero image
+    // ---------- Universal Lightbox for all images ----------
+    (function setupLightbox(){
       const lb = document.getElementById('lb');
       const lbImg = lb.querySelector('img');
       const lbClose = lb.querySelector('.close');
+      const lbPrev = lb.querySelector('.prev');
+      const lbNext = lb.querySelector('.next');
+      const lbCaption = document.getElementById('lb-caption');
 
-      hero.style.cursor = 'zoom-in';
-      hero.addEventListener('click', () => {
-        lbImg.src = hero.src;
-        lb.classList.add('open');
-        lbClose.focus();
+      // Build an ordered list of clickable images
+      const galleryImgs = Array.from(document.querySelectorAll('img'))
+        .filter(img => img.closest('.card') || img.closest('#work') || img.classList.contains('click-zoom'));
+
+      // mark clickable and give them indexes
+      galleryImgs.forEach((img, idx) => {
+        img.classList.add('click-zoom');
+        img.setAttribute('data-lb-index', String(idx));
+        img.setAttribute('tabindex', '0');
+        img.setAttribute('role', 'button');
+        img.addEventListener('click', () => openAt(idx));
+        img.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAt(idx); }
+        });
       });
 
-      lbClose.addEventListener('click', () => lb.classList.remove('open'));
-      lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('open'); });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
-    }
-  </script>
-</body>
-</html>
+      let current = -1;
+
+      function openAt(idx){
+        if (idx < 0 || idx >= galleryImgs.length) return;
+        current = idx;
+        const src = galleryImgs[idx].getAttribute('data-full') || galleryImgs[idx].src;
+        const alt = galleryImgs[idx].alt || '';
+        lbImg.src = src;
+        lbImg.alt = alt;
+        lbCaption.textContent = alt;
+        lb.classList.add('open');
+        lbClose.
