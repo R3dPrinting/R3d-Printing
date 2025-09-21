@@ -236,19 +236,22 @@
       <p class="muted">Tell us sizes, materials (PLA+, PETG, ABS, ASA), color, quantity, deadline — or attach a photo in your message.</p>
     </div>
 
-    <!-- Contact form -->
-    <form id="quote-form" class="card shadow ring card-pad" novalidate>
-      <!-- hidden spam trap (leave empty) -->
-      <input type="text" name="_gotcha" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;height:0;width:0;opacity:0">
-
-      <!-- helpful metadata (optional) -->
-      <input type="hidden" name="source" value="R3D Printing website">
-      <input type="hidden" name="page" value="index.html">
-
+    <!-- Direct Formspree form -->
+    <form action="https://formspree.io/f/mqadyasz" method="POST" class="card shadow ring card-pad">
       <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
-        <label>Name<br><input name="name" required></label>
-        <label>Email<br><input name="email" type="email" required></label>
-        <label>Phone (optional)<br><input name="phone" inputmode="tel" ></label>
+        
+        <label>Name<br>
+          <input type="text" name="name" required>
+        </label>
+
+        <label>Email<br>
+          <input type="email" name="email" required>
+        </label>
+
+        <label>Phone (optional)<br>
+          <input type="tel" name="phone">
+        </label>
+
         <label>Project Type<br>
           <select name="type">
             <option>Display Case</option>
@@ -258,6 +261,7 @@
             <option>Other Custom</option>
           </select>
         </label>
+
         <label style="grid-column:1/-1">Dimensions & Details<br>
           <textarea name="details" rows="6" required></textarea>
         </label>
@@ -266,17 +270,7 @@
           <small class="muted">Form powered by Formspree.</small>
           <button class="btn btn-primary" type="submit">Send</button>
         </div>
-
-        <!-- status line -->
-        <div id="form-status" class="muted" style="grid-column:1/-1;margin-top:8px"></div>
       </div>
-
-      <noscript>
-        <p class="muted" style="margin-top:10px">
-          JavaScript is required to submit. Or email us directly:
-          <a href="mailto:your@email.com">your@email.com</a>
-        </p>
-      </noscript>
     </form>
   </div>
 </section>
