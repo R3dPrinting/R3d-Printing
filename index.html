@@ -335,5 +335,74 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 })();
 
 </script>
+<script>
+// ---------- footer year ----------
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// ---------- Grey Pneumatic thumbnail -> hero swap ----------
+(() => {
+  const hero = document.getElementById('gp-hero');
+  if (!hero) return;
+  const thumbs = hero.closest('.card')?.querySelectorAll('.thumbs img') || [];
+  thumbs.forEach(t => t.addEventListener('click', () => {
+    const full = t.dataset.full || t.src;
+    hero.src = full;
+    hero.alt = t.alt || 'Preview';
+  }));
+})();
+
+// ---------- Universal Lightbox (uses existing #lb) ----------
+(() => {
+  const lb = document.getElementById('lb'); if (!lb) return;
+  const lbImg = lb.querySelector('img');
+  const lbClose = lb.querySelector('.close');
+  const lbPrev = lb.querySelector('.prev');
+  const lbNext = lb.querySelector('.next');
+  const lbCaption = document.getElementById('lb-caption');
+
+  // any image in a .card or with .click-zoom becomes clickable
+  const imgs = Array.from(document.querySelectorAll('img'))
+    .filter(img => img.closest('.card') || img.classList.contains('click-zoom'));
+
+  let current = -1;
+
+  function openAt(i){
+    if (i < 0 || i >= imgs.length) return;
+    current = i;
+    const src = imgs[i].dataset.full || imgs[i].src;
+    const alt = imgs[i].alt || '';
+    lbImg.src = src;
+    lbImg.alt = alt;
+    if (lbCaption) lbCaption.textContent = alt;
+    lb.classList.add('open');
+    lbClose?.focus();
+  }
+  function close(){ lb.classList.remove('open'); current = -1; }
+  function prev(){ if (current > -1) openAt((current - 1 + imgs.length) % imgs.length); }
+  function next(){ if (current > -1) openAt((current + 1) % imgs.length); }
+
+  imgs.forEach((img, i) => {
+    img.classList.add('click-zoom');
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.addEventListener('click', () => openAt(i));
+    img.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAt(i); }
+    });
+  });
+
+  lbClose?.addEventListener('click', close);
+  lbPrev?.addEventListener('click', prev);
+  lbNext?.addEventListener('click', next);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') prev();
+    if (e.key === 'ArrowRight') next();
+  }, { passive: true });
+})();
+</script>
+
 </body>
 </html>
