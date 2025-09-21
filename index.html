@@ -63,6 +63,107 @@
     .click-zoom{cursor:zoom-in}
   </style>
 </head>
+  <!-- Lightbox (in-DOM, reused) -->
+<div id="lb" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+  <button class="close" aria-label="Close preview">✕</button>
+  <button class="prev" aria-label="Previous image">◀</button>
+  <img alt="">
+  <button class="next" aria-label="Next image">▶</button>
+  <div class="caption" id="lb-caption"></div>
+</div>
+
+<style>
+/* --- Lightbox styles (brand orange buttons) --- */
+.lightbox{
+  position:fixed; inset:0; display:none;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.8); z-index:1000;
+}
+.lightbox.open{ display:flex; }
+.lightbox img{
+  max-width:92vw; max-height:90vh;
+  border-radius:12px; box-shadow:0 15px 60px rgba(0,0,0,.5);
+}
+.lightbox .close, .lightbox .prev, .lightbox .next{
+  position:absolute; border:none; background:var(--brand,#ea580c); color:#fff;
+  padding:.6rem .8rem; border-radius:12px; cursor:pointer; font-weight:800;
+}
+.lightbox .close{ top:20px; right:20px; }
+.lightbox .prev{ left:20px; top:50%; transform:translateY(-50%); }
+.lightbox .next{ right:20px; top:50%; transform:translateY(-50%); }
+.lightbox .caption{
+  position:absolute; left:0; right:0; bottom:16px;
+  text-align:center; color:#fff; font-size:14px; opacity:.9; padding:0 16px;
+}
+.click-zoom{ cursor:zoom-in; }
+</style>
+
+<script>
+// Footer year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// ---------- Grey Pneumatic thumbnail -> hero swap ----------
+(function setupGreyPneumaticGallery(){
+  const hero = document.getElementById('gp-hero');
+  if (!hero) return;
+  const thumbs = hero.closest('.card').querySelectorAll('.thumbs img');
+  thumbs.forEach(t => {
+    t.addEventListener('click', () => {
+      const full = t.dataset.full || t.src;
+      hero.src = full;
+      hero.alt = t.alt || 'Preview';
+    });
+  });
+})();
+
+// ---------- Universal Lightbox for all images ----------
+(function setupLightbox(){
+  const lb = document.getElementById('lb');
+  const lbImg = lb.querySelector('img');
+  const lbClose = lb.querySelector('.close');
+  const lbPrev = lb.querySelector('.prev');
+  const lbNext = lb.querySelector('.next');
+  const lbCaption = document.getElementById('lb-caption');
+
+  const galleryImgs = Array.from(document.querySelectorAll('img'))
+    .filter(img => img.classList.contains('click-zoom') || img.closest('.card'));
+
+  galleryImgs.forEach((img, idx) => {
+    img.classList.add('click-zoom');
+    img.dataset.lbIndex = idx;
+    img.addEventListener('click', () => openAt(idx));
+  });
+
+  let current = -1;
+
+  function openAt(idx){
+    if (idx < 0 || idx >= galleryImgs.length) return;
+    current = idx;
+    const src = galleryImgs[idx].dataset.full || galleryImgs[idx].src;
+    const alt = galleryImgs[idx].alt || '';
+    lbImg.src = src;
+    lbImg.alt = alt;
+    lbCaption.textContent = alt;
+    lb.classList.add('open');
+    lbClose.focus();
+  }
+
+  function close(){ lb.classList.remove('open'); current = -1; }
+  function prev(){ if (current>-1) openAt((current-1+galleryImgs.length)%galleryImgs.length); }
+  function next(){ if (current>-1) openAt((current+1)%galleryImgs.length); }
+
+  lbClose.addEventListener('click', close);
+  lbPrev.addEventListener('click', prev);
+  lbNext.addEventListener('click', next);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key==='Escape') close();
+    if (e.key==='ArrowLeft') prev();
+    if (e.key==='ArrowRight') next();
+  });
+})();
+</script>
 <body>
   <header>
     <div class="container" style="height:64px;display:flex;align-items:center;justify-content:space-between">
