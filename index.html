@@ -265,31 +265,37 @@
 </section>
 
 <script>
-/* =====================
-   R3D Printing — Script
+/* ============================================================
+   R3D Printing — Single Script
    - Footer year
-   - Grey Pneumatic thumbs -> hero
+   - Grey Pneumatic thumbs -> hero swap
    - Universal lightbox
-   ===================== */
+   - Contact form: Formspree v2
+   ============================================================ */
+
+/* ====== SET THIS TO YOUR REAL FORMSPREE ID ====== */
+const FORM_ID = "mqadyasz";   // <-- just the ID (not full URL!)
+const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORM_ID}`;
+
+/* ---------- helpers ---------- */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
-// Footer year
+/* ---------- footer year ---------- */
 (() => { const y = $('#year'); if (y) y.textContent = new Date().getFullYear(); })();
 
-// Grey Pneumatic thumbnail -> hero swap
+/* ---------- grey pneumatic thumbs -> hero ---------- */
 (() => {
   const hero = $('#gp-hero');
   if (!hero) return;
   const thumbs = hero.closest('.card')?.querySelectorAll('.thumbs img') || [];
   thumbs.forEach(t => t.addEventListener('click', () => {
     const full = t.dataset.full || t.src;
-    hero.src = full;
-    hero.alt = t.alt || 'Preview';
+    hero.src = full; hero.alt = t.alt || 'Preview';
   }));
 })();
 
-// Universal lightbox (uses existing #lb)
+/* ---------- universal lightbox ---------- */
 (() => {
   const lb = $('#lb'); if (!lb) return;
   const lbImg = $('img', lb), lbClose = $('.close', lb),
@@ -315,7 +321,7 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
     img.classList.add('click-zoom'); img.tabIndex = 0; img.setAttribute('role','button');
     img.addEventListener('click', () => openAt(i));
     img.addEventListener('keydown', e => {
-      if (e.key==='Enter' || e.key===' ') { e.preventDefault(); openAt(i); }
+      if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openAt(i); }
     });
   });
 
@@ -330,100 +336,8 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
     if (e.key==='ArrowRight') next();
   }, { passive: true });
 })();
-</script>
 
-
-  <footer>
-    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-      <div>
-        <div style="font-weight:700">R3D Printing</div>
-        <div class="muted" style="font-size:14px">Idaho, USA</div>
-      </div>
-      <div class="muted" style="font-size:14px">© <span id="year"></span> R3D Printing. All rights reserved.</div>
-    </div>
-  </footer>
-
-  <!-- Lightbox (shared) -->
-  <div id="lb" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
-    <button class="close" aria-label="Close preview">✕</button>
-    <button class="prev" aria-label="Previous image">◀</button>
-    <img alt="">
-    <button class="next" aria-label="Next image">▶</button>
-    <div class="caption" id="lb-caption"></div>
-  </div>
-
-<script>
-/* ============================================================
-   R3D Printing — Single Script (Formspree only, no mailto)
-   - Footer year
-   - Grey Pneumatic thumbs -> hero swap
-   - Universal lightbox
-   - Contact form: Formspree v2 (auto-send)
-   ============================================================ */
-
-/* ====== SET THIS TO YOUR REAL FORMSPREE ID ====== */
-const FORM_ID = "https://formspree.io/f/mqadryaz";   // e.g. "abcd1234"
-const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORM_ID}`;
-
-/* ---------- helpers ---------- */
-const $ = (s, r=document) => r.querySelector(s);
-const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-
-/* ---------- footer year ---------- */
-(() => { const y = $('#year'); if (y) y.textContent = new Date().getFullYear(); })();
-
-/* ---------- grey pneumatic thumbs -> hero ---------- */
-(() => {
-  const hero = $('#gp-hero');
-  if (!hero) return;
-  const thumbs = hero.closest('.card')?.querySelectorAll('.thumbs img') || [];
-  thumbs.forEach(t => t.addEventListener('click', () => {
-    const full = t.dataset.full || t.src;
-    hero.src = full; hero.alt = t.alt || 'Preview';
-  }));
-})();
-
-/* ---------- universal lightbox (uses existing #lb) ---------- */
-(() => {
-  const lb = $('#lb'); if (!lb) return;
-  const lbImg = $('img', lb), lbClose = $('.close', lb),
-        lbPrev = $('.prev', lb), lbNext = $('.next', lb),
-        lbCaption = $('#lb-caption');
-
-  const imgs = $$('img').filter(img => img.closest('.card') || img.classList.contains('click-zoom'));
-  let current = -1;
-
-  function openAt(i){
-    if (i<0 || i>=imgs.length) return;
-    current = i;
-    const src = imgs[i].dataset.full || imgs[i].src;
-    const alt = imgs[i].alt || '';
-    lbImg.src = src; lbImg.alt = alt; if (lbCaption) lbCaption.textContent = alt;
-    lb.classList.add('open'); lbClose?.focus();
-  }
-  function close(){ lb.classList.remove('open'); current = -1; }
-  function prev(){ if (current>-1) openAt((current-1+imgs.length)%imgs.length); }
-  function next(){ if (current>-1) openAt((current+1)%imgs.length); }
-
-  imgs.forEach((img, i) => {
-    img.classList.add('click-zoom'); img.tabIndex = 0; img.setAttribute('role','button');
-    img.addEventListener('click', () => openAt(i));
-    img.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openAt(i); }});
-  });
-
-  lbClose?.addEventListener('click', close);
-  lbPrev?.addEventListener('click', prev);
-  lbNext?.addEventListener('click', next);
-  lb.addEventListener('click', e => { if (e.target === lb) close(); });
-  document.addEventListener('keydown', e => {
-    if (!lb.classList.contains('open')) return;
-    if (e.key==='Escape') close();
-    if (e.key==='ArrowLeft') prev();
-    if (e.key==='ArrowRight') next();
-  }, { passive: true });
-})();
-
-/* ---------- contact form: Formspree v2 (no fallback) ---------- */
+/* ---------- contact form: Formspree ---------- */
 (() => {
   const form = document.getElementById('quote-form');
   if (!form) return;
@@ -439,16 +353,6 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
     e.preventDefault();
     statusEl.style.color = ''; statusEl.textContent = 'Sending…';
 
-    // spam honeypot
-    const hp = form.querySelector('input[name="_gotcha"]');
-    if (hp && hp.value) { statusEl.textContent = 'Something went wrong.'; return; }
-
-    if (!FORM_ID || /https://formspree.io/f/mqadryaz/i.test(FORM_ID)) {
-      statusEl.style.color = '#b91c1c';
-      statusEl.textContent = 'Form not configured: add your Formspree Form ID in the script.';
-      return;
-    }
-
     const data = new FormData(form);
     if (!data.has('_subject')) data.append('_subject', 'New Quote Request — R3D Printing');
 
@@ -460,12 +364,12 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
       if (res.ok) {
         form.reset();
         statusEl.style.color = '#16a34a';
-        statusEl.textContent = 'Thanks! Your request was sent. I’ll get back to you shortly.';
+        statusEl.textContent = 'Thanks! Your request was sent.';
       } else {
         let msg = 'Submit failed.';
         try { const j = await res.json(); if (j?.errors) msg = j.errors.map(e=>e.message).join(', '); } catch {}
         statusEl.style.color = '#b91c1c';
-        statusEl.textContent = msg + ' (Check Form ID, activation, and Allowed Domains.)';
+        statusEl.textContent = msg;
       }
     } catch {
       statusEl.style.color = '#b91c1c';
@@ -474,6 +378,5 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
   });
 })();
 </script>
-
 </body>
 </html>
