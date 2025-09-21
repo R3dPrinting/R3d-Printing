@@ -229,38 +229,35 @@
     </section>
 
 <!-- CONTACT -->
-<section id="contact" style="background:linear-gradient(#fff,#fafafa)">
-  <div class="container grid grid-2">
-    <div>
-      <h2>Get a Quote</h2>
-      <p class="muted">Tell us sizes, materials (PLA+, PETG, ABS, ASA), color, quantity, deadline — or attach a photo in your message.</p>
+<!-- Direct Formspree form (free plan, no JS needed) -->
+<form action="https://formspree.io/f/mqadryaz" method="POST" class="card shadow ring card-pad">
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
+    <label>Name<br><input type="text" name="name" required></label>
+    <label>Email<br><input type="email" name="email" required></label>
+    <label>Phone (optional)<br><input type="tel" name="phone"></label>
+    <label>Project Type<br>
+      <select name="type">
+        <option>Display Case</option>
+        <option>Figure Stand</option>
+        <option>Wall-Mount / Bracket</option>
+        <option>Replacement Part</option>
+        <option>Other Custom</option>
+      </select>
+    </label>
+    <label style="grid-column:1/-1">Dimensions & Details<br>
+      <textarea name="details" rows="6" required></textarea>
+    </label>
+
+    <!-- (optional but nice) subject line you'll see in Formspree/email -->
+    <input type="hidden" name="_subject" value="New Quote Request — R3D Printing">
+
+    <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
+      <small class="muted">Form powered by Formspree.</small>
+      <button class="btn btn-primary" type="submit">Send</button>
     </div>
+  </div>
+</form>
 
-    <!-- Direct Formspree form (no JS) -->
-    <form action="https://formspree.io/f/mqadyasz" method="POST" class="card shadow ring card-pad">
-      <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
-        <label>Name<br><input type="text" name="name" required></label>
-        <label>Email<br><input type="email" name="email" required></label>
-        <label>Phone (optional)<br><input type="tel" name="phone"></label>
-        <label>Project Type<br>
-          <select name="type">
-            <option>Display Case</option>
-            <option>Figure Stand</option>
-            <option>Wall-Mount / Bracket</option>
-            <option>Replacement Part</option>
-            <option>Other Custom</option>
-          </select>
-        </label>
-        <label style="grid-column:1/-1">Dimensions & Details<br>
-          <textarea name="details" rows="6" required></textarea>
-        </label>
-
-        <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center">
-          <small class="muted">Form powered by Formspree.</small>
-          <button class="btn btn-primary" type="submit">Send</button>
-        </div>
-      </div>
-    </form>
   </div>
 </section>
 
@@ -337,46 +334,6 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
   }, { passive: true });
 })();
 
-/* ---------- contact form: Formspree ---------- */
-(() => {
-  const form = document.getElementById('quote-form');
-  if (!form) return;
-
-  const statusEl = document.getElementById('form-status') || (() => {
-    const el = document.createElement('div');
-    el.id = 'form-status'; el.className = 'muted';
-    el.style.marginTop = '8px'; el.style.gridColumn = '1 / -1';
-    form.appendChild(el); return el;
-  })();
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    statusEl.style.color = ''; statusEl.textContent = 'Sending…';
-
-    const data = new FormData(form);
-    if (!data.has('_subject')) data.append('_subject', 'New Quote Request — R3D Printing');
-
-    try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST', body: data, headers: { 'Accept': 'application/json' }
-      });
-
-      if (res.ok) {
-        form.reset();
-        statusEl.style.color = '#16a34a';
-        statusEl.textContent = 'Thanks! Your request was sent.';
-      } else {
-        let msg = 'Submit failed.';
-        try { const j = await res.json(); if (j?.errors) msg = j.errors.map(e=>e.message).join(', '); } catch {}
-        statusEl.style.color = '#b91c1c';
-        statusEl.textContent = msg;
-      }
-    } catch {
-      statusEl.style.color = '#b91c1c';
-      statusEl.textContent = 'Network error. Please try again.';
-    }
-  });
-})();
 </script>
 </body>
 </html>
