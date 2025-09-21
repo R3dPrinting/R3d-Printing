@@ -22,15 +22,7 @@
     header{position:sticky;top:0;backdrop-filter:saturate(1.2) blur(8px);background:rgba(255,255,255,.9);border-bottom:1px solid #e5e7eb;z-index:40}
     nav a{padding:10px 0;margin-left:18px}
     .brand{display:flex;align-items:center;gap:10px}
-
-    /* Logo image */
-    .brand-logo{
-      width:100px;
-      height:auto;
-      object-fit:contain;
-      background:transparent;
-      display:block;
-    }
+    .brand-logo{width:100px;height:auto;object-fit:contain;background:transparent;display:block}
 
     .grid{display:grid;gap:20px}
     @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
@@ -48,122 +40,21 @@
     .thumbs{display:flex;gap:6px;margin-top:8px}
     .thumbs img{width:48px;height:48px;object-fit:cover;cursor:pointer;border:1px solid #e5e7eb;border-radius:6px}
 
-    /* --- Lightbox styles --- */
+    /* Lightbox */
     .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000}
     .lightbox.open{display:flex}
     .lightbox img{max-width:92vw;max-height:90vh;border-radius:12px;box-shadow:0 15px 60px rgba(0,0,0,.5)}
-    .lightbox .close, .lightbox .prev, .lightbox .next{
-      position:absolute;border:none;background:rgba(255,255,255,.9);padding:.6rem .8rem;border-radius:12px;cursor:pointer;font-weight:800
+    .lightbox .close,.lightbox .prev,.lightbox .next{
+      position:absolute;border:none;background:var(--brand);color:#fff;
+      padding:.6rem .8rem;border-radius:12px;cursor:pointer;font-weight:800
     }
     .lightbox .close{top:20px;right:20px}
     .lightbox .prev{left:20px;top:50%;transform:translateY(-50%)}
     .lightbox .next{right:20px;top:50%;transform:translateY(-50%)}
     .lightbox .caption{position:absolute;left:0;right:0;bottom:16px;text-align:center;color:#fff;font-size:14px;opacity:.9;padding:0 16px}
-    /* make all gallery imgs look clickable */
     .click-zoom{cursor:zoom-in}
   </style>
 </head>
-  <!-- Lightbox (in-DOM, reused) -->
-<div id="lb" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
-  <button class="close" aria-label="Close preview">✕</button>
-  <button class="prev" aria-label="Previous image">◀</button>
-  <img alt="">
-  <button class="next" aria-label="Next image">▶</button>
-  <div class="caption" id="lb-caption"></div>
-</div>
-
-<style>
-/* --- Lightbox styles (brand orange buttons) --- */
-.lightbox{
-  position:fixed; inset:0; display:none;
-  align-items:center; justify-content:center;
-  background:rgba(0,0,0,.8); z-index:1000;
-}
-.lightbox.open{ display:flex; }
-.lightbox img{
-  max-width:92vw; max-height:90vh;
-  border-radius:12px; box-shadow:0 15px 60px rgba(0,0,0,.5);
-}
-.lightbox .close, .lightbox .prev, .lightbox .next{
-  position:absolute; border:none; background:var(--brand,#ea580c); color:#fff;
-  padding:.6rem .8rem; border-radius:12px; cursor:pointer; font-weight:800;
-}
-.lightbox .close{ top:20px; right:20px; }
-.lightbox .prev{ left:20px; top:50%; transform:translateY(-50%); }
-.lightbox .next{ right:20px; top:50%; transform:translateY(-50%); }
-.lightbox .caption{
-  position:absolute; left:0; right:0; bottom:16px;
-  text-align:center; color:#fff; font-size:14px; opacity:.9; padding:0 16px;
-}
-.click-zoom{ cursor:zoom-in; }
-</style>
-
-<script>
-// Footer year
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// ---------- Grey Pneumatic thumbnail -> hero swap ----------
-(function setupGreyPneumaticGallery(){
-  const hero = document.getElementById('gp-hero');
-  if (!hero) return;
-  const thumbs = hero.closest('.card').querySelectorAll('.thumbs img');
-  thumbs.forEach(t => {
-    t.addEventListener('click', () => {
-      const full = t.dataset.full || t.src;
-      hero.src = full;
-      hero.alt = t.alt || 'Preview';
-    });
-  });
-})();
-
-// ---------- Universal Lightbox for all images ----------
-(function setupLightbox(){
-  const lb = document.getElementById('lb');
-  const lbImg = lb.querySelector('img');
-  const lbClose = lb.querySelector('.close');
-  const lbPrev = lb.querySelector('.prev');
-  const lbNext = lb.querySelector('.next');
-  const lbCaption = document.getElementById('lb-caption');
-
-  const galleryImgs = Array.from(document.querySelectorAll('img'))
-    .filter(img => img.classList.contains('click-zoom') || img.closest('.card'));
-
-  galleryImgs.forEach((img, idx) => {
-    img.classList.add('click-zoom');
-    img.dataset.lbIndex = idx;
-    img.addEventListener('click', () => openAt(idx));
-  });
-
-  let current = -1;
-
-  function openAt(idx){
-    if (idx < 0 || idx >= galleryImgs.length) return;
-    current = idx;
-    const src = galleryImgs[idx].dataset.full || galleryImgs[idx].src;
-    const alt = galleryImgs[idx].alt || '';
-    lbImg.src = src;
-    lbImg.alt = alt;
-    lbCaption.textContent = alt;
-    lb.classList.add('open');
-    lbClose.focus();
-  }
-
-  function close(){ lb.classList.remove('open'); current = -1; }
-  function prev(){ if (current>-1) openAt((current-1+galleryImgs.length)%galleryImgs.length); }
-  function next(){ if (current>-1) openAt((current+1)%galleryImgs.length); }
-
-  lbClose.addEventListener('click', close);
-  lbPrev.addEventListener('click', prev);
-  lbNext.addEventListener('click', next);
-  lb.addEventListener('click', e => { if (e.target === lb) close(); });
-  document.addEventListener('keydown', e => {
-    if (!lb.classList.contains('open')) return;
-    if (e.key==='Escape') close();
-    if (e.key==='ArrowLeft') prev();
-    if (e.key==='ArrowRight') next();
-  });
-})();
-</script>
 <body>
   <header>
     <div class="container" style="height:64px;display:flex;align-items:center;justify-content:space-between">
@@ -240,7 +131,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
           <!-- Grey Pneumatic Duo Socket Holder -->
           <article class="card shadow ring" data-gallery="grey-pneumatic">
             <div style="aspect-ratio:4/3">
-              <!-- Add an id so thumbnails can target this -->
               <img id="gp-hero" src="images/grey-pneumatic-.375.jpg" alt="Grey Pneumatic Duo Socket Holder with magnets" class="click-zoom">
             </div>
             <div class="card-pad">
@@ -253,7 +143,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
                 <li>Magnetic back (strong enough for upside-down use)</li>
               </ul>
               <div class="thumbs">
-                <!-- If you have bigger originals, set data-full to the big image; otherwise src is fine -->
                 <img src="images/grey-pneumatic-.375.jpg" alt="Grey Pneumatic front" data-full="images/grey-pneumatic-.375.jpg">
                 <img src="images/grey-pneumatic-packout.jpeg" alt="Packout mount" data-full="images/grey-pneumatic-packout.jpeg">
                 <img src="images/grey-pneumatic-upsidedown.jpg" alt="Upside-down strength" data-full="images/grey-pneumatic-upsidedown.jpg">
@@ -383,7 +272,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     </div>
   </footer>
 
-  <!-- Lightbox (in-DOM, reused) -->
+  <!-- Lightbox (shared) -->
   <div id="lb" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
     <button class="close" aria-label="Close preview">✕</button>
     <button class="prev" aria-label="Previous image">◀</button>
@@ -392,13 +281,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
     <div class="caption" id="lb-caption"></div>
   </div>
 
-  <!-- Single script: year, galleries, universal lightbox -->
   <script>
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ---------- Grey Pneumatic thumbnail -> hero swap ----------
-    (function setupGreyPneumaticGallery(){
+    // Grey Pneumatic thumbnail -> hero swap
+    (function(){
       const hero = document.getElementById('gp-hero');
       if (!hero) return;
       const thumbs = hero.closest('.card').querySelectorAll('.thumbs img');
@@ -411,8 +299,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
       });
     })();
 
-    // ---------- Universal Lightbox for all images ----------
-    (function setupLightbox(){
+    // Universal Lightbox
+    (function(){
       const lb = document.getElementById('lb');
       const lbImg = lb.querySelector('img');
       const lbClose = lb.querySelector('.close');
@@ -420,20 +308,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
       const lbNext = lb.querySelector('.next');
       const lbCaption = document.getElementById('lb-caption');
 
-      // Build an ordered list of clickable images
       const galleryImgs = Array.from(document.querySelectorAll('img'))
-        .filter(img => img.closest('.card') || img.closest('#work') || img.classList.contains('click-zoom'));
+        .filter(img => img.classList.contains('click-zoom') || img.closest('.card'));
 
-      // mark clickable and give them indexes
       galleryImgs.forEach((img, idx) => {
         img.classList.add('click-zoom');
-        img.setAttribute('data-lb-index', String(idx));
-        img.setAttribute('tabindex', '0');
-        img.setAttribute('role', 'button');
+        img.dataset.lbIndex = idx;
         img.addEventListener('click', () => openAt(idx));
         img.addEventListener('keydown', e => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAt(idx); }
         });
+        img.setAttribute('tabindex','0');
+        img.setAttribute('role','button');
       });
 
       let current = -1;
@@ -441,10 +327,30 @@ document.getElementById('year').textContent = new Date().getFullYear();
       function openAt(idx){
         if (idx < 0 || idx >= galleryImgs.length) return;
         current = idx;
-        const src = galleryImgs[idx].getAttribute('data-full') || galleryImgs[idx].src;
+        const src = galleryImgs[idx].dataset.full || galleryImgs[idx].src;
         const alt = galleryImgs[idx].alt || '';
         lbImg.src = src;
         lbImg.alt = alt;
         lbCaption.textContent = alt;
         lb.classList.add('open');
-        lbClose.
+        lbClose.focus();
+      }
+
+      function close(){ lb.classList.remove('open'); current = -1; }
+      function prev(){ if (current>-1) openAt((current-1+galleryImgs.length)%galleryImgs.length); }
+      function next(){ if (current>-1) openAt((current+1)%galleryImgs.length); }
+
+      lbClose.addEventListener('click', close);
+      lbPrev.addEventListener('click', prev);
+      lbNext.addEventListener('click', next);
+      lb.addEventListener('click', e => { if (e.target === lb) close(); });
+      document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key==='Escape') close();
+        if (e.key==='ArrowLeft') prev();
+        if (e.key==='ArrowRight') next();
+      }, { passive:true });
+    })();
+  </script>
+</body>
+</html>
