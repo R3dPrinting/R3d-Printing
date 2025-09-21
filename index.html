@@ -362,179 +362,128 @@ const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORM_ID}`;
     <div class="caption" id="lb-caption"></div>
   </div>
 
- <script>
+<script>
 /* ============================================================
-   R3D Printing — Single Replacement Script
+   R3D Printing — Single Script (Formspree only, no mailto)
    - Footer year
    - Grey Pneumatic thumbs -> hero swap
-   - Universal lightbox binding
-   - Contact form: Formspree v2 + mailto fallback
+   - Universal lightbox
+   - Contact form: Formspree v2 (auto-send)
    ============================================================ */
 
-/* ---------- CONFIG: set these ---------- */
-const FORMSPREE_FORM_ID = "https://formspree.io/f/mqadryaz"; // e.g. "abcdwxyz"
-const MAILTO_FALLBACK   = "ryanberreman@gmail.com";          // fallback address
+/* ====== SET THIS TO YOUR REAL FORMSPREE ID ====== */
+const FORM_ID = "https://formspree.io/f/mqadryaz";   // e.g. "abcd1234"
+const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORM_ID}`;
 
-/* ---------- Helpers ---------- */
-const $ = (sel, root=document) => root.querySelector(sel);
-const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+/* ---------- helpers ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
-/* ---------- Footer year ---------- */
-(() => {
-  const el = $('#year');
-  if (el) el.textContent = new Date().getFullYear();
-})();
+/* ---------- footer year ---------- */
+(() => { const y = $('#year'); if (y) y.textContent = new Date().getFullYear(); })();
 
-/* ---------- Grey Pneumatic thumbnail -> hero swap ---------- */
+/* ---------- grey pneumatic thumbs -> hero ---------- */
 (() => {
   const hero = $('#gp-hero');
   if (!hero) return;
   const thumbs = hero.closest('.card')?.querySelectorAll('.thumbs img') || [];
-  thumbs.forEach(t => {
-    t.addEventListener('click', () => {
-      const full = t.dataset.full || t.src;
-      hero.src = full;
-      hero.alt = t.alt || 'Preview';
-    });
-  });
+  thumbs.forEach(t => t.addEventListener('click', () => {
+    const full = t.dataset.full || t.src;
+    hero.src = full; hero.alt = t.alt || 'Preview';
+  }));
 })();
 
-/* ---------- Universal Lightbox (uses existing #lb) ---------- */
+/* ---------- universal lightbox (uses existing #lb) ---------- */
 (() => {
-  const lb = $('#lb');
-  if (!lb) return; // safety
+  const lb = $('#lb'); if (!lb) return;
+  const lbImg = $('img', lb), lbClose = $('.close', lb),
+        lbPrev = $('.prev', lb), lbNext = $('.next', lb),
+        lbCaption = $('#lb-caption');
 
-  const lbImg     = $('img', lb);
-  const lbClose   = $('.close', lb);
-  const lbPrev    = $('.prev', lb);
-  const lbNext    = $('.next', lb);
-  const lbCaption = $('#lb-caption');
-
-  // Select all imgs inside .card plus any pre-marked .click-zoom
   const imgs = $$('img').filter(img => img.closest('.card') || img.classList.contains('click-zoom'));
-
-  // Make each focusable & bind open
-  imgs.forEach((img, idx) => {
-    img.classList.add('click-zoom');
-    img.dataset.lbIndex = idx;
-    img.tabIndex = 0;
-    img.setAttribute('role', 'button');
-    img.addEventListener('click', () => openAt(idx));
-    img.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAt(idx); }
-    });
-  });
-
   let current = -1;
 
-  function openAt(idx){
-    if (idx < 0 || idx >= imgs.length) return;
-    current = idx;
-    const src = imgs[idx].dataset.full || imgs[idx].src;
-    const alt = imgs[idx].alt || '';
-    lbImg.src = src;
-    lbImg.alt = alt;
-    if (lbCaption) lbCaption.textContent = alt;
-    lb.classList.add('open');
-    lbClose?.focus();
+  function openAt(i){
+    if (i<0 || i>=imgs.length) return;
+    current = i;
+    const src = imgs[i].dataset.full || imgs[i].src;
+    const alt = imgs[i].alt || '';
+    lbImg.src = src; lbImg.alt = alt; if (lbCaption) lbCaption.textContent = alt;
+    lb.classList.add('open'); lbClose?.focus();
   }
   function close(){ lb.classList.remove('open'); current = -1; }
-  function prev(){ if (current > -1) openAt((current - 1 + imgs.length) % imgs.length); }
-  function next(){ if (current > -1) openAt((current + 1) % imgs.length); }
+  function prev(){ if (current>-1) openAt((current-1+imgs.length)%imgs.length); }
+  function next(){ if (current>-1) openAt((current+1)%imgs.length); }
+
+  imgs.forEach((img, i) => {
+    img.classList.add('click-zoom'); img.tabIndex = 0; img.setAttribute('role','button');
+    img.addEventListener('click', () => openAt(i));
+    img.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openAt(i); }});
+  });
 
   lbClose?.addEventListener('click', close);
   lbPrev?.addEventListener('click', prev);
   lbNext?.addEventListener('click', next);
-
-  // click backdrop to close
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
-
-  // keyboard controls while open
   document.addEventListener('keydown', e => {
     if (!lb.classList.contains('open')) return;
-    if (e.key === 'Escape')     close();
-    if (e.key === 'ArrowLeft')  prev();
-    if (e.key === 'ArrowRight') next();
+    if (e.key==='Escape') close();
+    if (e.key==='ArrowLeft') prev();
+    if (e.key==='ArrowRight') next();
   }, { passive: true });
 })();
 
-/* ---------- Contact form: Formspree v2 + mailto fallback ---------- */
+/* ---------- contact form: Formspree v2 (no fallback) ---------- */
 (() => {
   const form = document.getElementById('quote-form');
   if (!form) return;
 
-  let statusEl = document.getElementById('form-status');
-  if (!statusEl) {
-    statusEl = document.createElement('div');
-    statusEl.id = 'form-status';
-    statusEl.className = 'muted';
-    statusEl.style.marginTop = '8px';
-    statusEl.style.gridColumn = '1 / -1';
-    form.appendChild(statusEl);
-  }
-
-  const endpoint = (FORMSPREE_FORM_ID && !/^REPLACE_/i.test(FORMSPREE_FORM_ID))
-    ? `https://formspree.io/f/${FORMSPREE_FORM_ID}`
-    : null;
+  const statusEl = document.getElementById('form-status') || (() => {
+    const el = document.createElement('div');
+    el.id = 'form-status'; el.className = 'muted';
+    el.style.marginTop = '8px'; el.style.gridColumn = '1 / -1';
+    form.appendChild(el); return el;
+  })();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    statusEl.style.color = '';
-    statusEl.textContent = 'Sending…';
+    statusEl.style.color = ''; statusEl.textContent = 'Sending…';
 
-    // Spam honeypot
-    const bot = form.querySelector('input[name="_gotcha"]');
-    if (bot && bot.value) { statusEl.textContent = 'Something went wrong.'; return; }
+    // spam honeypot
+    const hp = form.querySelector('input[name="_gotcha"]');
+    if (hp && hp.value) { statusEl.textContent = 'Something went wrong.'; return; }
+
+    if (!FORM_ID || /https://formspree.io/f/mqadryaz/i.test(FORM_ID)) {
+      statusEl.style.color = '#b91c1c';
+      statusEl.textContent = 'Form not configured: add your Formspree Form ID in the script.';
+      return;
+    }
 
     const data = new FormData(form);
     if (!data.has('_subject')) data.append('_subject', 'New Quote Request — R3D Printing');
 
-    // Try Formspree if configured
-    if (endpoint) {
-      try {
-        const res = await fetch(endpoint, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
-        if (res.ok) {
-          form.reset();
-          statusEl.style.color = '#16a34a'; // green
-          statusEl.textContent = 'Thanks! Your request was sent. I’ll get back to you shortly.';
-          return;
-        } else {
-          let msg = 'Form not found or not activated.';
-          try {
-            const j = await res.json();
-            if (j?.errors) msg = j.errors.map(e => e.message).join(', ');
-          } catch(_) {}
-          statusEl.style.color = '#b91c1c'; // red
-          statusEl.textContent = msg + ' Falling back to email…';
-          // fall through to mailto
-        }
-      } catch {
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST', body: data, headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.reset();
+        statusEl.style.color = '#16a34a';
+        statusEl.textContent = 'Thanks! Your request was sent. I’ll get back to you shortly.';
+      } else {
+        let msg = 'Submit failed.';
+        try { const j = await res.json(); if (j?.errors) msg = j.errors.map(e=>e.message).join(', '); } catch {}
         statusEl.style.color = '#b91c1c';
-        statusEl.textContent = 'Network error. Falling back to email…';
-        // fall through to mailto
+        statusEl.textContent = msg + ' (Check Form ID, activation, and Allowed Domains.)';
       }
-    } else {
-      statusEl.textContent = 'Form ID not set. Using email fallback…';
+    } catch {
+      statusEl.style.color = '#b91c1c';
+      statusEl.textContent = 'Network error. Please try again.';
     }
-
-    // Mailto fallback (opens user email client prefilled)
-    const fields = Object.fromEntries(Array.from(data.entries()));
-    const subject = encodeURIComponent('New Quote Request — R3D Printing');
-    const body = encodeURIComponent(
-      `Name: ${fields.name || ''}\n` +
-      `Email: ${fields.email || ''}\n` +
-      `Phone: ${fields.phone || ''}\n` +
-      `Project Type: ${fields.type || ''}\n\n` +
-      `Details:\n${fields.details || ''}\n\n` +
-      `Source: R3D Printing website`
-    );
-    const to = MAILTO_FALLBACK || 'youremail@example.com';
-    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-
-    statusEl.style.color = '#ea580c'; // brand
-    statusEl.textContent = 'Opening your email client… If nothing opens, email us directly.';
   });
 })();
 </script>
+
 </body>
 </html>
